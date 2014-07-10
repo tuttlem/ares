@@ -98,12 +98,12 @@ _entry:
    mov   es, ax
    mov   ss, ax
 
-   mov   rsp, _stack + 0xFFFFFFFF80000000
+   mov   rsp, _stack + 0xFFFFFFFF80000000    ; re-base the stack
 
-   mov   rax, Gdtr3
+   mov   rax, Gdtr3                          ; re-base the gdt
    lgdt  [rax]
 
-   mov   rax, main
+   mov   rax, main                           ; jump into c-land
    call  rax
 
    cli
@@ -165,34 +165,57 @@ paging_and_longmode:
 ; 55 - 52: flags
 ; 51 - 48: limit 16:19
 ; 47 - 40: access byte
-; 39 - 16: base 23:0
-; 15 -  0: limit 15:0
+; 39 - 32: base 16:23
+; 31 - 16: base 0:15
+; 15 -  0: limit 0:15
 ;
-; base =
-;
-;
+; base (32 bits)  = linear address of where the segment begins
+; limit (20 bits) = maximum addressable unit (1 byte unit or pages)
+; access byte =
+;     7   "Pr"   : Present bit - must be 1 for all selectors
+;     6-5 "Privl": Privilege bits (ring level 0-3)
+;     4          : Always 1
+;     3   "Ex"   : Executable (1 for code segment, 0 for data)
+;     2   "DC"   : Direction bit/Conforming bit
+;        Direction for data selectors (0 segment grows up, 1 grows down)
+;        Conforming for code selectors
+;           1: Execution by privilege level equal or below
+;           0: Execution by privilege equal ONLY
+;     1   "RW"   : Readable for code selectors, Writable for data selectors
+;     0   "Ac"   : CPU sets this to 1 when segment is accessed
+; flags =
+;     7   "Gr": Granularity - 0 for limit in bytes, 1 for limit in pages
+;     6   "Sz": Size - 0 for 16 bit protected mode, 1 for 32 bit
+;     5   "L" : 1 for 64 bit mode (Sz must be set to 0)
+;     4   unused: set to 0
 ;
 ; LGDT expects the size and the address (offset) of the prespective GDT entries
 ; so first is the raw GDT values. Following the table is the definitions that
 ; are fed to LGDT.
 
 TmpGdt:
+; Protected mode GDT
    DQ    0x0000000000000000                              ; null descriptor
    DQ    0x00CF9A000000FFFF                              ; code segment (type 0x9A)
    DQ    0x00CF92000000FFFF                              ; data segment (type 0x92)
+
+; Long mode GDT
    DQ    0x0000000000000000                              ; null descriptor
    DQ    0x00A09A0000000000                              ; code segment (type 0x9A)
    DQ    0x00A0920000000000                              ; data segment (type 0x92)
 
+; Protected mode GDT
 Gdtr1:
-   DW    23                                              ; size of the table
-   DD    TmpGdt                                          ; table start
+   DW    23                                              ; (n-1) entries (length)
+   DD    TmpGdt                                          ; first table address
 
+; Long mode GDT
 Gdtr2:
-   DW    23                                              ; size of the table
-   DD    TmpGdt + 24                                     ; table start
+   DW    23                                              ; (n-1) entries (length)
+   DD    TmpGdt + 24                                     ; second table address
    DD    0                                               ; padded end
 
+; Long mode GDT (re-based to the kernel - see VIRT_BASE in linker script)
 Gdtr3:
    DW    23                                              ; size of the table
    DQ    TmpGdt + 24 + 0xFFFFFFFF80000000                ; table start
