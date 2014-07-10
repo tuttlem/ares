@@ -200,6 +200,8 @@ TmpGdt:
    DQ    0x00CF92000000FFFF                              ; data segment (type 0x92)
 
 ; Long mode GDT
+; long mode doesn't support segmented memory, so there's no need
+; to define a base or limit here. Its just 0000000000000000->FFFFFFFFFFFFFFFF
    DQ    0x0000000000000000                              ; null descriptor
    DQ    0x00A09A0000000000                              ; code segment (type 0x9A)
    DQ    0x00A0920000000000                              ; data segment (type 0x92)
