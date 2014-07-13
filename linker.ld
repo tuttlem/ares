@@ -1,3 +1,4 @@
+OUTPUT_FORMAT(elf64-x86-64)
 ENTRY(_entry)
 
 VIRT_BASE = 0xFFFFFFFF80000000;
@@ -13,16 +14,16 @@ SECTIONS
       *(.boot)
       . = ALIGN(4096);
 
-      /* Pml4 -> Page map level 4 (0x100000) */
-      Pml4 = .;
+      /* Pml4 -> Page map level 4 (after boot) */
+      pml4 = .;
       . += 0x1000;
 
-      /* Pdpt -> Page directory pointer table (0x101000) */
-      Pdpt = .;
+      /* Pdpt -> Page directory pointer table (4096 bytes after Pml4) */
+      pdpt = .;
       . += 0x1000;
 
-      /* Pd -> Page directory (0x102000) */
-      Pd = .;
+      /* Pd -> Page directory (4096 bytes after Pdpt) */
+      pd = .;
       . += 0x1000;
       . += 0x8000;
       _stack = .;
@@ -42,7 +43,7 @@ SECTIONS
       *(.gnu.linkonce.d*)
    }
 
-   .rodata ALIGN(0x1000) : AT(ADDR(.bss) - VIRT_BASE)
+   .rodata ALIGN(0x1000) : AT(ADDR(.rodata) - VIRT_BASE)
    {
       *(.rodata*)
       *(.gnu.linkonce.r*)
