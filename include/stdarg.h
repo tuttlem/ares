@@ -1,13 +1,13 @@
 
 /*
- * phoenix/include/stdarg.h
+ * Ares 64-bit operating system
  *
  * Variable argument definitions
  */
 
-#ifndef __phoenix_stdarg_h_
+#ifndef __ares_stdarg_h_
 
-#define __phoenix_stdarg_h_
+#define __ares_stdarg_h_
 
 typedef char *va_list;
 
@@ -25,4 +25,4 @@ void va_end(va_list);
    (AP += __va_rounded_size(TYPE),                                      \
     *((TYPE *) (AP - __va_rounded_size(TYPE))))
 
-#endif /* __phoenix_stdarg_h_ */
+#endif 

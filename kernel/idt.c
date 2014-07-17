@@ -29,6 +29,18 @@ void idt_init() {
    /* start with a blank table */
    memset(&idt, 0, sizeof(struct _idt_entry) * 256);
 
+   /* Re-map the irq table to use ISRs 32 -> 47 */
+   outb(0x20, 0x11);
+   outb(0xA0, 0x11);
+   outb(0x21, 0x20);
+   outb(0xA1, 0x28);
+   outb(0x21, 0x04);
+   outb(0xA1, 0x02);
+   outb(0x21, 0x01);
+   outb(0xA1, 0x01);
+   outb(0x21, 0x0);
+   outb(0xA1, 0x0);
+
    /* setup ISR entries in the idt */
    idt_set(ISR0,  (u64)isr_0,  0x08, 0x8e);
    idt_set(ISR1,  (u64)isr_1,  0x08, 0x8e);
@@ -64,30 +76,28 @@ void idt_init() {
    idt_set(ISR31, (u64)isr_31, 0x08, 0x8e);
 
    /* setup the IRQ entries in the idt */
-   /*
-   idt_set(32, (u64)irq_0,  0x08, 0x8f);
-   idt_set(33, (u64)irq_1,  0x08, 0x8f);
-   idt_set(34, (u64)irq_2,  0x08, 0x8f);
-   idt_set(35, (u64)irq_3,  0x08, 0x8f);
-   idt_set(36, (u64)irq_4,  0x08, 0x8f);
-   idt_set(37, (u64)irq_5,  0x08, 0x8f);
-   idt_set(38, (u64)irq_6,  0x08, 0x8f);
-   idt_set(39, (u64)irq_7,  0x08, 0x8f);
-   idt_set(40, (u64)irq_8,  0x08, 0x8f);
-   idt_set(41, (u64)irq_9,  0x08, 0x8f);
-   idt_set(42, (u64)irq_10, 0x08, 0x8f);
-   idt_set(43, (u64)irq_11, 0x08, 0x8f);
-   idt_set(44, (u64)irq_12, 0x08, 0x8f);
-   idt_set(45, (u64)irq_13, 0x08, 0x8f);
-   idt_set(46, (u64)irq_14, 0x08, 0x8f);
-   idt_set(47, (u64)irq_15, 0x08, 0x8f);
-   */
+   idt_set(IRQ0,  (u64)irq_0,  0x08, 0x8e);
+   idt_set(IRQ1,  (u64)irq_1,  0x08, 0x8e);
+   idt_set(IRQ2,  (u64)irq_2,  0x08, 0x8e);
+   idt_set(IRQ3,  (u64)irq_3,  0x08, 0x8e);
+   idt_set(IRQ4,  (u64)irq_4,  0x08, 0x8e);
+   idt_set(IRQ5,  (u64)irq_5,  0x08, 0x8e);
+   idt_set(IRQ6,  (u64)irq_6,  0x08, 0x8e);
+   idt_set(IRQ7,  (u64)irq_7,  0x08, 0x8e);
+   idt_set(IRQ8,  (u64)irq_8,  0x08, 0x8e);
+   idt_set(IRQ9,  (u64)irq_9,  0x08, 0x8e);
+   idt_set(IRQ10, (u64)irq_10, 0x08, 0x8e);
+   idt_set(IRQ11, (u64)irq_11, 0x08, 0x8e);
+   idt_set(IRQ12, (u64)irq_12, 0x08, 0x8e);
+   idt_set(IRQ13, (u64)irq_13, 0x08, 0x8e);
+   idt_set(IRQ14, (u64)irq_14, 0x08, 0x8e);
+   idt_set(IRQ15, (u64)irq_15, 0x08, 0x8e);
 
-   /* setup the table pointer */
+   /* setup the table pointer and write it */
    idt_ptr.limit = (sizeof(struct _idt_entry) * 256) - 1;
    idt_ptr.base  = (u64)&idt;
-
-   printf("idt_ptr: %x\n", (u64)&idt_ptr);
-
    idt_write((u64)&idt_ptr);
+
+   /* initialize the interrupt handler system */
+   interrupt_init();   
 }

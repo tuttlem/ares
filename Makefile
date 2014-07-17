@@ -7,7 +7,7 @@ LFLAGS	:= -nostdlib -z nodefaultlib -z max-page-size=0x1000
 ISO     := os.iso
 OUTPUT  := kernel.sys
 
-OBJS := boot/boot.o boot/isr.o init/main.o kernel/io.o kernel/idt.o kernel/interrupt.o kernel/console.o kernel/string.o kernel/panic.o kernel/printf.o
+OBJS := boot/boot.o boot/isr.o boot/cpuid.o init/main.o kernel/io.o kernel/idt.o kernel/interrupt.o kernel/pit.o kernel/console.o kernel/string.o kernel/panic.o kernel/printf.o
 
 all: $(ISO)
 

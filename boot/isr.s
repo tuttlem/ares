@@ -8,6 +8,7 @@
 [GLOBAL idt_write]
 
 [EXTERN isr_handler]
+[EXTERN irq_handler]
 
 %macro push_all 0
    push  rax
@@ -50,6 +51,16 @@
       jmp   isr_common
 %endmacro
 
+%macro irq 2
+   global irq_%1
+
+   irq_%1:
+      cli
+      push  0
+      push  %2
+      jmp   irq_common
+%endmacro
+
 [SECTION .text]
 
 isr_noerr 0
@@ -85,6 +96,23 @@ isr_noerr 29
 isr_noerr 30
 isr_noerr 31
 
+irq       0,  32
+irq       1,  33
+irq       2,  34
+irq       3,  35
+irq       4,  36
+irq       5,  37
+irq       6,  38
+irq       7,  39
+irq       8,  40
+irq       9,  41
+irq       10, 42
+irq       11, 43
+irq       12, 44
+irq       13, 45
+irq       14, 46
+irq       15, 47
+
 idt_write:
    mov   rax, rdi       ; idt_ptr is passed in
    lidt  [rax]
@@ -106,6 +134,37 @@ isr_common:
 
    call  isr_handler
 
+   pop   rbx            ; restore the data segment
+   mov   ds, bx
+   mov   es, bx
+   mov   fs, bx
+   mov   gs, bx
+
+   pop_all
+
+   add   rsp, 16        ; adjust the stack for both the
+                        ; interrupt number and error code
+                        ; that was pushed prior to jmp
+   
+   sti
+
+   iretq
+
+irq_common:
+
+   push_all
+
+   mov   ax, ds         ; save the data segment
+   push  rax
+
+   mov   ax, 0x10       ; set the data segment
+   mov   ds, ax
+   mov   es, ax
+   mov   fs, ax
+   mov   gs, ax
+
+   call  irq_handler
+   
    pop   rbx            ; restore the data segment
    mov   ds, bx
    mov   es, bx

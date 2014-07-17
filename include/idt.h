@@ -2,7 +2,7 @@
 /*
  * Ares 64-bit Operating System
  *
- * Interrupt service routine module
+ * Interrupt setup module
  */
 
 #ifndef __ares_idt_h_

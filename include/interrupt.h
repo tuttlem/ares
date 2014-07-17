@@ -11,6 +11,27 @@
 
 #include <types.h>
 
+#define PIC1 			0x20		/* IO base address for master PIC */
+#define PIC2			0xA0		/* IO base address for slave PIC */
+#define PIC1_CMD		PIC1
+#define PIC1_DATA		(PIC1 + 1)
+#define PIC2_CMD		PIC2
+#define PIC2_DATA		(PIC2 + 1)
+
+#define PIC_EOI			0x20		/* End of interrupt signal */
+
+#define ICW1_ICW4		0x01		/* ICW4 (not) needed */
+#define ICW1_SINGLE		0x02		/* Single (cascade) mode */
+#define ICW1_INTERVAL4	0x04		/* Call address interval 4 (8) */
+#define ICW1_LEVEL		0x08		/* Level triggered (edge) mode */
+#define ICW1_INIT		0x10		/* Initialization - required! */
+ 
+#define ICW4_8086		0x01		/* 8086/88 (MCS-80/85) mode */
+#define ICW4_AUTO		0x02		/* Auto (normal) EOI */
+#define ICW4_BUF_SLAVE	0x08		/* Buffered mode/slave */
+#define ICW4_BUF_MASTER	0x0C		/* Buffered mode/master */
+#define ICW4_SFNM		0x10		/* Special fully nested (not) */
+
 #define ISR0 		0  /* Divide error (#DE) */
 #define ISR1 		1  /* Debug (#DB) */
 #define ISR2 		2  /* NMI Interrupt */
@@ -46,29 +67,38 @@
 #define ISR30 	   30
 #define ISR31 	   31
 
-#define IRQ0       32
-#define IRQ1       33
-#define IRQ2       34
-#define IRQ3       35
-#define IRQ4       36
-#define IRQ5       37
-#define IRQ6       38
-#define IRQ7       39
-#define IRQ8       40
-#define IRQ9       41
-#define IRQ10      42
-#define IRQ11      43
-#define IRQ12      44
-#define IRQ13      45
-#define IRQ14      46
-#define IRQ15      47
+#define IRQ0       32 	/* Timer */
+#define IRQ1       33	/* Keyboard */
+#define IRQ2       34	/* Unused */
+#define IRQ3       35	/* COM 2 */
+#define IRQ4       36 	/* COM 1 */
+#define IRQ5       37 	/* LPT 2 */
+#define IRQ6       38 	/* FDD */
+#define IRQ7       39 	/* LPT 1 */
+#define IRQ8       40 	/* CMOS realtime clock */
+#define IRQ9       41 	/* Unused */
+#define IRQ10      42	/* Unused */
+#define IRQ11      43	/* Unused */
+#define IRQ12      44	/* PS/2 mouse */
+#define IRQ13      45	/* Unused */
+#define IRQ14      46	/* Unused */
+#define IRQ15      47	/* Unused */
 
 struct _registers {
 	u64 ds;                                         /* once off push */
 	u64 rdi, rsi, rbp, rsp, rbx, rdx, rcx, rax;     /* provided by push_all */
 	u64 int_no, err_code;                           /* provided by the macro */
-   u64 rip, cs, rflags, user_rsp, user_ss;         /* provided by the processor */
+    u64 rip, cs, rflags, user_rsp, user_ss;         /* provided by the processor */
 };
+
+/* Format of an interrupt handler */
+typedef void (*_isr)(struct _registers);
+
+/* Initializes the interrupt handler system */
+void interrupt_init(void);
+
+/* Provides access to handle an interrupt */
+void interrupt_register_handler(u8 n, _isr handler);
 
 /* external isr and irq defs */
 extern void isr_0();
