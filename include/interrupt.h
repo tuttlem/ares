@@ -67,9 +67,9 @@
 #define ISR30 	   30
 #define ISR31 	   31
 
-#define IRQ0       32 	/* Timer */
+#define IRQ0       32 	/* Programmable Interrupt Timer */
 #define IRQ1       33	/* Keyboard */
-#define IRQ2       34	/* Unused */
+#define IRQ2       34	/* Cascade (never used) */
 #define IRQ3       35	/* COM 2 */
 #define IRQ4       36 	/* COM 1 */
 #define IRQ5       37 	/* LPT 2 */
@@ -80,9 +80,9 @@
 #define IRQ10      42	/* Unused */
 #define IRQ11      43	/* Unused */
 #define IRQ12      44	/* PS/2 mouse */
-#define IRQ13      45	/* Unused */
-#define IRQ14      46	/* Unused */
-#define IRQ15      47	/* Unused */
+#define IRQ13      45	/* FPU/Co-pro */
+#define IRQ14      46	/* Primary ATA HDD */
+#define IRQ15      47	/* Secondary ATA HDD */
 
 struct _registers {
 	u64 ds;                                         /* once off push */

@@ -11,6 +11,69 @@ u64 idt_addr = (u64)&idt_ptr;
 /* Writes the idt */
 extern void idt_write(u64);
 
+/* Remaps the slave and master PIC to re-base from a new offset */
+void irq_remap(u32 offset1, u32 offset2) {
+
+   u8 a1, a2;
+
+   /* save current masks */
+   a1 = inb(PIC1_DATA);
+   a2 = inb(PIC2_DATA);
+
+   /* start init sequence */
+   outb(PIC1_CMD, ICW1_INIT + ICW1_ICW4);
+   outb(PIC2_CMD, ICW1_INIT + ICW1_ICW4);
+
+   /* write the offsets */
+   outb(PIC1_DATA, offset1);
+   outb(PIC2_DATA, offset2);
+
+   /* Notify master that there is a slave at irq 2 (0000 0100) */
+   outb(PIC1_DATA, 4);
+   /* Notify slace of its identity (0000 0010) */
+   outb(PIC2_DATA, 2);
+
+   outb(PIC1_DATA, ICW4_8086);
+   outb(PIC2_DATA, ICW4_8086);
+
+   /* restore the saved masks */
+   outb(PIC1_DATA, a1);
+   outb(PIC2_DATA, a2);
+}
+
+/* Sets a bit on in the irq mask (PIC will ignore set bits) */
+void irq_set_mask(u8 line) {
+   u16 port;
+   u8 value;
+
+   if (line < 8) {
+      port = PIC1_DATA;
+   } else {
+      port = PIC2_DATA;
+      line -= 8;
+   }
+
+   value = inb(port) | (1 << line);
+   outb(port, value);
+}
+
+/* Clears a bit on in the irq mask (PIC will respond to clear bits) */
+void irq_clear_mask(u8 line) {
+   u16 port;
+   u8 value;
+
+   if (line < 8) {
+      port = PIC1_DATA;
+   } else {
+      port = PIC2_DATA;
+      line -= 8;
+   }
+
+   value = inb(port) & ~(1 << line);
+   outb(port, value);
+}
+
+
 /* Sets up a single gate in the IDT */
 void idt_set(u8 gate, u64 off, u16 sel, u8 flags) {
    idt[gate].low_off = off & 0xffff;
@@ -26,20 +89,18 @@ void idt_set(u8 gate, u64 off, u16 sel, u8 flags) {
 
 /* Initializes the idt */
 void idt_init() {
+   /* initialize the interrupt handler system */
+   interrupt_init();   
+   
    /* start with a blank table */
    memset(&idt, 0, sizeof(struct _idt_entry) * 256);
 
+   /* setup the table pointer */
+   idt_ptr.limit = (sizeof(struct _idt_entry) * 256) - 1;
+   idt_ptr.base  = (u64)&idt;
+
    /* Re-map the irq table to use ISRs 32 -> 47 */
-   outb(0x20, 0x11);
-   outb(0xA0, 0x11);
-   outb(0x21, 0x20);
-   outb(0xA1, 0x28);
-   outb(0x21, 0x04);
-   outb(0xA1, 0x02);
-   outb(0x21, 0x01);
-   outb(0xA1, 0x01);
-   outb(0x21, 0x0);
-   outb(0xA1, 0x0);
+   irq_remap(0x20, 0x28);
 
    /* setup ISR entries in the idt */
    idt_set(ISR0,  (u64)isr_0,  0x08, 0x8e);
@@ -93,11 +154,7 @@ void idt_init() {
    idt_set(IRQ14, (u64)irq_14, 0x08, 0x8e);
    idt_set(IRQ15, (u64)irq_15, 0x08, 0x8e);
 
-   /* setup the table pointer and write it */
-   idt_ptr.limit = (sizeof(struct _idt_entry) * 256) - 1;
-   idt_ptr.base  = (u64)&idt;
    idt_write((u64)&idt_ptr);
 
-   /* initialize the interrupt handler system */
-   interrupt_init();   
+
 }

@@ -1,17 +1,8 @@
 
 #include <pit.h>
 
-u32 tick = 0;
-
-void test_handler(struct _registers regs) {
-	printf("Tick: %d\n", tick);
-	tick ++;
-}
-
 /* Initialize the timer to run at a frequency */
 void pit_init(u32 freq) {
-
-	interrupt_register_handler(IRQ0, &test_handler);
 
 	/* calculate the divisor */
 	u32 divisor = PIT_CLOCK_OSC / freq;

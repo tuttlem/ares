@@ -37,11 +37,11 @@ void irq_handler(struct _registers regs) {
 	   if this interrupt involved the slave */
 	if (regs.int_no >= 40) {
 		/* sends a reset signal to the slave */
-		outb(0xA0, 0x20);
+		outb(PIC2_CMD, PIC_EOI);
 	}
 
 	/* sends a reset signal to the master */
-	outb(0x20, 0x20);
+	outb(PIC1_CMD, PIC_EOI);
 
 	/* on-fire the handler if we have one */
 	if (_handlers[regs.int_no]) {
