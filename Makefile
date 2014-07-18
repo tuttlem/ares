@@ -1,5 +1,5 @@
 CC 	    := gcc
-CFLAGS 	:= -m64 -mcmodel=kernel -ffreestanding -nostdlib -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -mno-sse3 -mno-3dnow -Iinclude
+CFLAGS 	:= -m64 -mcmodel=kernel -ffreestanding -nostdlib -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -mno-sse3 -mno-3dnow -Ikernel/include
 AS	    := nasm
 AFLAGS	:= -felf64
 LD	    := ld
@@ -7,7 +7,7 @@ LFLAGS	:= -nostdlib -z nodefaultlib -z max-page-size=0x1000
 ISO     := os.iso
 OUTPUT  := kernel.sys
 
-OBJS := boot/boot.o boot/isr.o boot/cpuid.o init/main.o kernel/io.o kernel/idt.o kernel/interrupt.o kernel/pit.o kernel/console.o kernel/string.o kernel/panic.o kernel/printf.o
+OBJS := boot/boot.o kernel/asm/isr.o kernel/asm/cpuid.o init/main.o kernel/io.o kernel/idt.o kernel/interrupt.o kernel/pit.o kernel/console.o kernel/string.o kernel/panic.o kernel/printf.o
 
 all: $(ISO)
 

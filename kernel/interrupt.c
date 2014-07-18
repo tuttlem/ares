@@ -32,7 +32,7 @@ void isr_handler(struct _registers regs) {
 
 /* Handles IRQ requests */
 void irq_handler(struct _registers regs) {
-	printf("Was hit?\n");
+
 	/* send an EOI (end of interrupt) signal to the PICs
 	   if this interrupt involved the slave */
 	if (regs.int_no >= 40) {

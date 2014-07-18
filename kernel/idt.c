@@ -156,5 +156,5 @@ void idt_init() {
 
    idt_write((u64)&idt_ptr);
 
-
+   asm volatile ("sti");
 }
