@@ -113,11 +113,6 @@ irq       13, 45
 irq       14, 46
 irq       15, 47
 
-idt_write:
-   mov   rax, rdi       ; idt_ptr is passed in
-   lidt  [rax]
-
-   ret
 
 isr_common:
 

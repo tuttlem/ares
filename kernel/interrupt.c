@@ -3,9 +3,75 @@
 
 _isr _handlers[256];
 
+/* Remaps the slave and master PIC to re-base from a new offset */
+void irq_remap(u32 offset1, u32 offset2) {
+
+   u8 a1, a2;
+
+   /* save current masks */
+   a1 = inb(PIC1_DATA);
+   a2 = inb(PIC2_DATA);
+
+   /* start init sequence */
+   outb(PIC1_CMD, ICW1_INIT + ICW1_ICW4);
+   outb(PIC2_CMD, ICW1_INIT + ICW1_ICW4);
+
+   /* write the offsets */
+   outb(PIC1_DATA, offset1);
+   outb(PIC2_DATA, offset2);
+
+   /* Notify master that there is a slave at irq 2 (0000 0100) */
+   outb(PIC1_DATA, 4);
+   /* Notify slace of its identity (0000 0010) */
+   outb(PIC2_DATA, 2);
+
+   outb(PIC1_DATA, ICW4_8086);
+   outb(PIC2_DATA, ICW4_8086);
+
+   /* restore the saved masks */
+   outb(PIC1_DATA, a1);
+   outb(PIC2_DATA, a2);
+}
+
+/* Sets a bit on in the irq mask (PIC will ignore set bits) */
+void irq_set_mask(u8 line) {
+   u16 port;
+   u8 value;
+
+   if (line < 8) {
+      port = PIC1_DATA;
+   } else {
+      port = PIC2_DATA;
+      line -= 8;
+   }
+
+   value = inb(port) | (1 << line);
+   outb(port, value);
+}
+
+/* Clears a bit on in the irq mask (PIC will respond to clear bits) */
+void irq_clear_mask(u8 line) {
+   u16 port;
+   u8 value;
+
+   if (line < 8) {
+      port = PIC1_DATA;
+   } else {
+      port = PIC2_DATA;
+      line -= 8;
+   }
+
+   value = inb(port) & ~(1 << line);
+   outb(port, value);
+}
+
+
 /* Initializes the interrupt handler system */
 void interrupt_init(void) {
 	memset(_handlers, 0, sizeof(_isr) * 256);	
+
+   /* Re-map the irq table to use ISRs 32 -> 47 */
+   irq_remap(0x20, 0x28);	
 }
 
 /* Provides access to handle an interrupt */
