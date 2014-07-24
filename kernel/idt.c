@@ -4,10 +4,6 @@
 /* Each entry in the table */
 struct _idt_entry idt[256] __attribute__((aligned(0x1000)));
 
-/* Pointer to the table */
-struct _idt idt_ptr;
-u64 idt_addr = (u64)&idt_ptr;
-
 /* Sets up a single gate in the IDT */
 void idt_set(u8 gate, u64 off, u16 sel, u8 flags) {
    idt[gate].low_off = off & 0xffff;
@@ -21,6 +17,19 @@ void idt_set(u8 gate, u64 off, u16 sel, u8 flags) {
    idt[gate].zero1 = 0;
 }
 
+/* Writes a new value for the idt */
+static inline void lidt(void *base, u16 size) {
+  struct {
+    u16 length;
+    u64 base;
+  } __attribute__((packed)) IDTR;
+
+  IDTR.length = size;
+  IDTR.base = (u64)base;
+
+  asm volatile ("lidt (%0)" : : "p"(&IDTR));
+}
+
 /* Initializes the idt */
 void idt_init() {
    /* initialize the interrupt handler system */
@@ -28,10 +37,6 @@ void idt_init() {
    
    /* start with a blank table */
    memset(&idt, 0, sizeof(struct _idt_entry) * 256);
-
-   /* setup the table pointer */
-   idt_ptr.limit = (sizeof(struct _idt_entry) * 256) - 1;
-   idt_ptr.base  = (u64)&idt;
 
    /* setup ISR entries in the idt */
    idt_set(ISR0,  (u64)isr_0,  0x08, 0x8e);
@@ -85,6 +90,9 @@ void idt_init() {
    idt_set(IRQ14, (u64)irq_14, 0x08, 0x8e);
    idt_set(IRQ15, (u64)irq_15, 0x08, 0x8e);
 
-   /* load the idt & enable interrupts */
-   asm volatile ("lidt (%0); sti" : : "p"((u64)&idt_ptr));
+   /* load the idt */
+   lidt(&idt, (sizeof(struct _idt_entry) * 256) - 1);
+
+   /* enable interrupts */
+   asm volatile ("sti");
 }
