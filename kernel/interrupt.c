@@ -113,5 +113,4 @@ void irq_handler(struct _registers regs) {
 	if (_handlers[regs.int_no]) {
 		_handlers[regs.int_no](regs);
 	}
-
 }
