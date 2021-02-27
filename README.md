@@ -7,7 +7,7 @@
 Build environment is provided as a docker container. Create the docker image with the following:
 
 ```
-docker build buildenv -t buildenv
+docker build buildenv -t ares_build
 ```
 
 You can now build the project with the following:

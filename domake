@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker run --rm -ti -v $(pwd):/root/env buildenv make $@
+docker run --rm -ti -v $(pwd):/build ares_build make $@
