@@ -1,9 +1,0 @@
-#!/bin/bash
-
-docker run --rm -ti \
-           -v /tmp/.X11-unix:/tmp/.X11-unix \
-           -v $(pwd):/usr/src/app \
-           -w /usr/src/app \
-           -e DISPLAY=unix:0.0 \
-           tuttlem/ares \
-           "$@"
