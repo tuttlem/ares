@@ -35,7 +35,6 @@ build-x86_64: $(kernel_object_files) $(x86_64_object_files)
 	cp dist/x86_64/kernel.bin targets/x86_64/iso/boot/kernel.bin && \
 	grub-mkrescue /usr/lib/grub/i386-pc -o dist/x86_64/kernel.iso targets/x86_64/iso
 
-
 clean:
 	rm -Rf ./dist
 	rm -Rf ./build

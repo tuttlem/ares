@@ -7,11 +7,11 @@ void kbd_drv_init();
 void kbd_drv_term();
 
 void main() {
-   idt_init();
-kbd_drv_init();
+  idt_init();
+  kbd_drv_init();
 
-/*   PANIC("Show's over, folks!"); */
+  /*   PANIC("Show's over, folks!"); */
 
-   while (1);
+  while (1);
 }
 
