@@ -91,4 +91,23 @@ void* memcpy(void *d, const void *s, size_t n) {
    return d;
 }
 
+int memcmp(const void *s1, const void *s2, size_t n) {
+  u8 *p = s1;
+  u8 *q = s2;
 
+  if (s1 == s2) {
+    return 0;
+  }
+
+  while (n > 0) {
+    if (*p != *q) {
+      return (*p > *q) ? 1 : -1;
+    }
+
+    n --;
+    p ++;
+    q ++;
+  }
+
+  return 0;
+}

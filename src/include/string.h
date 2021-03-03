@@ -21,11 +21,6 @@ char* strncpy(char *dest, const char *src, size_t n);
 
 void* memset(void *s, u8 c, size_t n);
 void* memcpy(void *d, const void *s, size_t n);
-
-static inline int memcmp(const void *s1, const void *s2, size_t n) {
-   u8 d;
-   asm("repe; cmpsb; setnz %0" : "=qm" (d), "+D" (s1), "+S" (s2), "+c" (n));
-   return d;
-}
+int memcmp(const void *s1, const void *s2, size_t n);
 
 #endif /* __ares_string_h_ */
