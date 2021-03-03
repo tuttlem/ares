@@ -1,5 +1,5 @@
 CC 	    := x86_64-elf-gcc
-CFLAGS 	:= -c -m64 -mcmodel=kernel -ffreestanding -nostdlib -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -mno-sse3 -mno-3dnow -Isrc/include
+CFLAGS 	:= -c -m64 -mcmodel=kernel -ffreestanding -nostdlib -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -mno-sse3 -mno-3dnow -Isrc/include -Isrc/impl/x86_64/include
 AS	    := nasm
 AFLAGS	:= -felf64
 LD	    := x86_64-elf-ld
