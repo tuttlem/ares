@@ -12,6 +12,8 @@
 #include <types.h>
 #include <io.h>
 
+#include <kernel.h>
+
 #define CPUID_VENDOR_OLDAMD       "AMDisbetter!" 
 #define CPUID_VENDOR_AMD          "AuthenticAMD"
 #define CPUID_VENDOR_INTEL        "GenuineIntel"

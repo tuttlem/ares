@@ -4,6 +4,8 @@
  * Keyboard driver
  */
 
+#include <kernel.h>
+
 #include <types.h>
 #include <io.h>
 #include <interrupt.h>
