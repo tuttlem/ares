@@ -111,3 +111,113 @@ int memcmp(const void *s1, const void *s2, size_t n) {
 
   return 0;
 }
+
+int atoi(const char *s) {
+  u32 len = strlen(s);
+  u32 out = 0;
+  u32 i;
+  u32 pow = 1;
+
+  for (i = len; i > 0; --i) {
+    out += (s[i-1] - 48) * pow;
+    pow *= 10;
+  }
+
+  return out;
+}
+
+char* strtok(char *s, const char *delim, char **saveptr) {
+  char *token;
+
+  if (s == NULL) {
+    s = *saveptr;
+  }
+
+  s += strspn(s, delim);
+  if (*s == '\0') {
+    *saveptr = s;
+    return NULL;
+  }
+
+  token = s;
+  s = strpbrk(token, delim);
+  if (s == NULL) {
+    *saveptr = (char*)lfind(token, '\0');
+  } else {
+    *s = '\0';
+    *saveptr = s + 1;
+  }
+
+  return token;
+}
+
+size_t lfind(const char *s, const char accept) {
+  size_t i = 0;
+  while (s[i] != accept) {
+    i ++;
+  }
+
+  return (size_t)(s) + i;
+}
+
+size_t rfind(const char *s, const char accept) {
+  size_t i = strlen(s) - 1;
+  while (s[i] != accept) {
+    if (i == 0) {
+      return U32_MAX;
+    }
+
+    i ++;
+  }
+
+  return (size_t)(s) + i;
+}
+
+size_t strspn(const char *str, const char *accept) {
+  const char *ptr = str;
+  const char *acc;
+
+  while (*str) {
+    for (acc = accept; *acc; ++acc) {
+      if (*str == *acc) {
+        break;
+      }
+    }
+
+    if (*acc == '\0') {
+      break;
+    }
+
+    str ++;
+  }
+
+  return str - ptr;
+}
+
+char* strpbrk(const char *str, const char *accept) {
+  const char *acc = accept;
+
+  if (!*str) {
+    return NULL;
+  }
+
+  while (*str) {
+    for (acc = accept; *acc; ++acc) {
+      if (*str == *acc) {
+        break;
+      }
+    }
+
+    if (*acc) {
+      break;
+    }
+
+    ++str;
+  }
+
+  if (*acc == '\0') {
+    return NULL;
+  }
+
+  return (char *)str;
+}

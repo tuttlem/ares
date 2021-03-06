@@ -19,6 +19,11 @@ typedef unsigned long size_t;
 typedef          long ssize_t;
 #endif
 
+#define U8_MAX            0xFF
+#define U16_MAX           0xFFFF
+#define U32_MAX           0xFFFFFFFF
+#define U64_MAX           0xFFFFFFFFFFFFFFFF
+
 /* Standard integer types */
 typedef unsigned char  		u8;
 typedef          char  		s8;

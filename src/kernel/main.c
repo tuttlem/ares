@@ -6,8 +6,17 @@
 void kbd_drv_init();
 void kbd_drv_term();
 
+u32 lock = 0;
+
 void main() {
   idt_init();
+
+  printf("Attempting lock: %d\n", lock);
+  spin_lock(&lock);
+  printf("Got the lock: %d\n", lock);
+  spin_unlock(&lock);
+  printf("Released the lock: %d\n", lock);
+
   kbd_drv_init();
 
   /*   PANIC("Show's over, folks!"); */
