@@ -9,6 +9,8 @@
 #include <types.h>
 #include <io.h>
 #include <interrupt.h>
+#include <drivers.h>
+#include <device.h>
 
 #define KBD_BUFFER_SIZE     256
 
@@ -21,9 +23,9 @@ typedef struct {
     u8 key_code;
 } sk_pair;
 
-u8 kbd_buffer[KBD_BUFFER_SIZE];
-u32 kbd_head = 0;
-u32 kbd_tail = 0;
+static u8 kbd_buffer[KBD_BUFFER_SIZE];
+static u32 kbd_head = 0;
+static u32 kbd_tail = 0;
 
 sk_pair kbd_s2k_pairs[] = {
     { 0x00, 0x00 }, { 0x01, 0x1B }, { 0x02, 0x31 }, { 0x03, 0x32 }, { 0x04, 0x33 },
@@ -54,6 +56,13 @@ sk_pair kbd_s2k_pairs[] = {
 };
 
 
+/* Initializes the keyboard driver */
+static int ps2kbd_init();
+
+/* Unloads the keyboard driver */
+static void ps2kbd_term();
+
+
 /**
  * For a given scan code value, this function will lookup the
  * corresponding key code
@@ -73,23 +82,10 @@ u8 kbd_get_key_code(u8 scan_code) {
 }
 
 /* The keyboard IRQ handler routine */
-void kbd_drv_handler(struct _registers regs);
-
-/* Initializes the keyboard driver */
-int kbd_drv_init() {
-  /* install an interrupt handler that will listen to IRQ1 which
-     is the keyboard */
-  interrupt_register_handler(IRQ1, kbd_drv_handler);
-}
-
-/* Unloads the keyboard driver */
-int kbd_drv_term() {
-  /* remove the keyboard handler */
-  interrupt_register_handler(IRQ1, NULL);
-}
+void ps2kbd_handler(struct _registers regs);
 
 /* The keyboard IRQ handler routine */
-void kbd_drv_handler(struct _registers regs) {
+void ps2kbd_handler(struct _registers regs) {
   /* read the scan code from the keyboard - take note: this is not the
      ASCII code of the character */
   u8 scan_code = inb(KBD_DATA_PORT);
@@ -112,4 +108,46 @@ u8 kbd_get_key() {
     kbd_tail = (kbd_tail + 1) % KBD_BUFFER_SIZE;
 
     return key_code;
+}
+
+driver_t ps2kbd_driver = {
+    .name = "ps2kbd",
+    .init = ps2kbd_init,
+    .term = ps2kbd_term,
+};
+
+static int ps2kbd_read(device_t* dev, char* buf, int len) {
+    int i = 0;
+    while (i < len) {
+        u8 ch = kbd_get_key();
+        if (ch == 0x00) break;
+        buf[i++] = ch;
+    }
+    return i;
+}
+
+device_t ps2kbd_device = {
+    .name = "ps2kbd0",
+    .type = DEVICE_CHAR,
+    .read = ps2kbd_read,
+    .write = 0, // Not writable
+    .driver_data = NULL
+};
+
+
+/* Initializes the keyboard driver */
+static int ps2kbd_init() {
+    /* install an interrupt handler that will listen to IRQ1 which
+       is the keyboard */
+    interrupt_register_handler(IRQ1, ps2kbd_handler);
+
+    device_register(&ps2kbd_device);
+
+    return 0;
+}
+
+/* Unloads the keyboard driver */
+static void ps2kbd_term() {
+    /* remove the keyboard handler */
+    interrupt_register_handler(IRQ1, NULL);
 }
