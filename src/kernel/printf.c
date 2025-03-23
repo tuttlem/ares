@@ -36,7 +36,6 @@
 
 #include <types.h>
 #include <string.h>
-#include <console.h>
 
 typedef unsigned long long u_quad_t;
 typedef long long quad_t;
@@ -411,8 +410,12 @@ number:
 #undef PCHAR
 }
 
+extern void console_put(char c);
+extern void write_stdout_char(char, int);
+
 static void putchar(int c, void *arg) {
-   console_put(c);
+ //   console_put(c);
+    write_stdout_char(c, 1);
 }
 
 void printf(const char *fmt, ...) {

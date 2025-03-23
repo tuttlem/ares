@@ -1,5 +1,7 @@
 
 #include <console.h>
+#include <device.h>
+#include <drivers.h>
 
 static u16 cur_x = 0, cur_y = 0;
 static u16 *console_buffer = (u16*)0xB8000;
@@ -86,3 +88,33 @@ void console_puts(const char *s) {
       console_put(s[i++]);
    }
 }
+
+static int console_write(device_t* dev, const char* buf, int len) {
+    for (int i = 0; i < len; i ++) {
+        console_put(buf[i]);
+    }
+
+    return len;
+}
+
+device_t console_device = {
+    .name = "console0",
+    .type = DEVICE_CHAR,
+    .read = 0,
+    .write = console_write,
+    .driver_data = NULL
+};
+
+int console_driver_init() {
+    device_register(&console_device);
+    return 0;
+}
+
+void console_driver_term() {
+}
+
+driver_t console_driver = {
+    .name = "console",
+    .init = console_driver_init,
+    .term = console_driver_term
+};
