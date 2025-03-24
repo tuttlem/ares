@@ -3,6 +3,8 @@
 #include <drivers.h>
 #include <device.h>
 #include <idt.h>
+#include <pit.h>
+#include <time.h>
 #include <cpuid.h>
 
 extern void set_stdout_device(device_t* dev);
@@ -16,14 +18,17 @@ void main() {
 
   device_t *kbd = device_find_by_name("ps2kbd");
 
-  int i = atoi("123");
-  printf("%d\n", i);
-
   while (1) {
     char ch;
 
     if (kbd->read(kbd, &ch, 1) == 1) {
         printf("%c", ch);
+    }
+
+    if (ch == 13) {
+      u32 ticks = clock_seconds();
+      printf("\n [%d] ", ticks);
+      ch = 0;
     }
   }
 

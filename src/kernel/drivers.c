@@ -3,15 +3,17 @@
 
 #define MAX_DRIVERS 64
 
+extern driver_t pit_driver;
 extern driver_t console_driver;
 extern driver_t ps2kbd_driver;
 
 static driver_t* registered_drivers[] = {
+    &pit_driver,
     &console_driver,
     &ps2kbd_driver,
 };
 
-static int driver_count = 2;
+static int driver_count = 3;
 
 /**
  * Initialize all of the registered drivers
