@@ -1,7 +1,9 @@
 
-#include <console.h>
+#include <types.h>
 #include <device.h>
 #include <drivers.h>
+
+#include <io.h>
 
 static u16 cur_x = 0, cur_y = 0;
 static u16 *console_buffer = (u16*)0xB8000;

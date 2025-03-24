@@ -112,19 +112,6 @@ int memcmp(const void *s1, const void *s2, size_t n) {
   return 0;
 }
 
-int atoi(const char *s) {
-  u32 len = strlen(s);
-  u32 out = 0;
-  u32 i;
-  u32 pow = 1;
-
-  for (i = len; i > 0; --i) {
-    out += (s[i-1] - 48) * pow;
-    pow *= 10;
-  }
-
-  return out;
-}
 
 char* strtok(char *s, const char *delim, char **saveptr) {
   char *token;

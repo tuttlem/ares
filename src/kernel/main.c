@@ -5,8 +5,7 @@
 #include <idt.h>
 #include <cpuid.h>
 
-#include "../drivers/include/io.h"
-
+extern void set_stdout_device(device_t* dev);
 
 void main() {
   idt_init();
@@ -16,6 +15,9 @@ void main() {
   set_stdout_device(con);
 
   device_t *kbd = device_find_by_name("ps2kbd");
+
+  int i = atoi("123");
+  printf("%d\n", i);
 
   while (1) {
     char ch;
