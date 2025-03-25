@@ -2,8 +2,8 @@
 #include <string.h>
 
 int strcmp(const char *s1, const char *s2) {
-   const u8 *sp1 = (const u8 *)s1;
-   const u8 *sp2 = (const u8 *)s2;
+   const uint8_t *sp1 = (const uint8_t *)s1;
+   const uint8_t *sp2 = (const uint8_t *)s2;
    int d = 0;
 
    while (*sp1 || *sp2) {
@@ -19,7 +19,7 @@ int strcmp(const char *s1, const char *s2) {
 }
 
 int strncmp(const char *s1, const char *s2, size_t n) {
-   u8 c1, c2;
+   uint8_t c1, c2;
 
    while (n) {
       c1 = *s1++;
@@ -78,22 +78,22 @@ char* strstr(const char *s1, const char *s2) {
    return NULL;
 }
 
-void* memset(void *d, u8 c, size_t n) {
-   u8 *dp = (u8 *)d;
+void* memset(void *d, uint8_t c, size_t n) {
+   uint8_t *dp = (uint8_t *)d;
    for (; n != 0; n --) *dp++ = c;
    return d;
 }
 
 void* memcpy(void *d, const void *s, size_t n) {
-   u8 *dp = (u8 *)d;
-   const u8 *sp = (const u8 *)s;
+   uint8_t *dp = (uint8_t *)d;
+   const uint8_t *sp = (const uint8_t *)s;
    for (; n != 0; n --) *dp++ = *sp++;
    return d;
 }
 
 int memcmp(const void *s1, const void *s2, size_t n) {
-  u8 *p = s1;
-  u8 *q = s2;
+  uint8_t *p = s1;
+  uint8_t *q = s2;
 
   if (s1 == s2) {
     return 0;
@@ -151,7 +151,7 @@ size_t rfind(const char *s, const char accept) {
   size_t i = strlen(s) - 1;
   while (s[i] != accept) {
     if (i == 0) {
-      return U32_MAX;
+      return uint32_t_MAX;
     }
 
     i ++;

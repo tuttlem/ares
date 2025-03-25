@@ -98,7 +98,7 @@
 
 
 /* Get a complete cpuid request */
-static inline void cpuid_get(u64 code, u32 str[4]) {
+static inline void cpuid_get(uint64_t code, uint32_t str[4]) {
   asm volatile( "cpuid" : "=a" (*str),
   						  "=b" (*(str+1)),
   						  "=c" (*(str+2)),
@@ -107,6 +107,6 @@ static inline void cpuid_get(u64 code, u32 str[4]) {
 }
 
 /* Diagnostic print of a cpuid result */
-void cpuid_diag(u32 str[4]);
+void cpuid_diag(uint32_t str[4]);
 
 #endif /* __ares_cpuid_h_ */

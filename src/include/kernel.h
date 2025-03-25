@@ -25,9 +25,9 @@
 #define abs(a)    ((a >= 0) ? a : -a)
 
 /* Panic prototypes */
-extern void panic(const char *msg, const char *file, u32 line);
-extern void panic_assert(const char *file, u32 line, const char *desc);
+extern void panic(const char *msg, const char *file, uint32_t line);
+extern void panic_assert(const char *file, uint32_t line, const char *desc);
 
-u32 rand();
+uint32_t rand();
 
 #endif /* __ares_kernel_h_ */

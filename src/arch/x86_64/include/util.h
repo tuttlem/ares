@@ -11,8 +11,8 @@
 
 #include <types.h>
 
-static inline u64 farpeekq(u16 sel, void *off) {
-  u64 ret;
+static inline uint64_t farpeekq(uint16_t sel, void *off) {
+  uint64_t ret;
   asm ("push %%fs\n\t"
        "mov  %1, %%fs\n\t"
        "mov  %%fs:(%2), %0\n\t"
@@ -22,8 +22,8 @@ static inline u64 farpeekq(u16 sel, void *off) {
   return ret;
 }
 
-static inline u32 farpeekd(u16 sel, void *off) {
-  u32 ret;
+static inline uint32_t farpeekd(uint16_t sel, void *off) {
+  uint32_t ret;
   asm ("push %%fs\n\t"
        "mov  %1, %%fs\n\t"
        "mov  %%fs:(%2), %0\n\t"
@@ -33,8 +33,8 @@ static inline u32 farpeekd(u16 sel, void *off) {
   return ret;
 }
 
-static inline u16 farpeekw(u16 sel, void *off) {
-  u16 ret;
+static inline uint16_t farpeekw(uint16_t sel, void *off) {
+  uint16_t ret;
   asm ("push %%fs\n\t"
        "mov  %1, %%fs\n\t"
        "mov  %%fs:(%2), %0\n\t"
@@ -44,8 +44,8 @@ static inline u16 farpeekw(u16 sel, void *off) {
   return ret;
 }
 
-static inline u8 farpeekb(u16 sel, void *off) {
-  u8 ret;
+static inline uint8_t farpeekb(uint16_t sel, void *off) {
+  uint8_t ret;
   asm ("push %%fs\n\t"
        "mov  %1, %%fs\n\t"
        "mov  %%fs:(%2), %0\n\t"
@@ -55,7 +55,7 @@ static inline u8 farpeekb(u16 sel, void *off) {
   return ret;
 }
 
-static inline void farpokeq(u16 sel, void *off, u64 v) {
+static inline void farpokeq(uint16_t sel, void *off, uint64_t v) {
   asm ("push %%fs\n\t"
        "mov  %0, %%fs\n\t"
        "mov  %2, %%fs:(%1)\n\t"
@@ -64,7 +64,7 @@ static inline void farpokeq(u16 sel, void *off, u64 v) {
        : "g"(sel), "r"(off), "r"(v));
 }
 
-static inline void farpoked(u16 sel, void *off, u32 v) {
+static inline void farpoked(uint16_t sel, void *off, uint32_t v) {
   asm ("push %%fs\n\t"
        "mov  %0, %%fs\n\t"
        "mov  %2, %%fs:(%1)\n\t"
@@ -73,7 +73,7 @@ static inline void farpoked(u16 sel, void *off, u32 v) {
        : "g"(sel), "r"(off), "r"(v));
 }
 
-static inline void farpokew(u16 sel, void *off, u16 v) {
+static inline void farpokew(uint16_t sel, void *off, uint16_t v) {
   asm ("push %%fs\n\t"
        "mov  %0, %%fs\n\t"
        "mov  %2, %%fs:(%1)\n\t"
@@ -82,7 +82,7 @@ static inline void farpokew(u16 sel, void *off, u16 v) {
        : "g"(sel), "r"(off), "r"(v));
 }
 
-static inline void farpokeb(u16 sel, void *off, u8 v) {
+static inline void farpokeb(uint16_t sel, void *off, uint8_t v) {
   asm ("push %%fs\n\t"
        "mov  %0, %%fs\n\t"
        "mov  %2, %%fs:(%1)\n\t"
@@ -92,43 +92,43 @@ static inline void farpokeb(u16 sel, void *off, u8 v) {
 }
 
 /* Read the current value of the CPU's time-stamp counter */
-static inline u64 rdtsc() {
-  u64 ret;
+static inline uint64_t rdtsc() {
+  uint64_t ret;
   asm volatile ("rdtsc" : "=A"(ret));
   return ret;
 }
 
 /* Read the value of cr1 */
-static inline u64 get_cr1() {
-  u64 ret;
+static inline uint64_t get_cr1() {
+  uint64_t ret;
   asm volatile ("mov %%cr1, %0" : "=r"(val));
   return ret;
 }
 
 /* Read the value of cr2 */
-static inline u64 get_cr2() {
-  u64 ret;
+static inline uint64_t get_cr2() {
+  uint64_t ret;
   asm volatile ("mov %%cr2, %0" : "=r"(val));
   return ret;
 }
 
 /* Read the value of cr3 */
-static inline u64 get_cr3() {
-  u64 ret;
+static inline uint64_t get_cr3() {
+  uint64_t ret;
   asm volatile ("mov %%cr3, %0" : "=r"(val));
   return ret;
 }
 
 /* Read the value of cr4 */
-static inline u64 get_cr4() {
-  u64 ret;
+static inline uint64_t get_cr4() {
+  uint64_t ret;
   asm volatile ("mov %%cr4, %0" : "=r"(val));
   return ret;
 }
 
 /* Read the value of cr0 */
-static inline u64 get_cr0() {
-  u64 ret;
+static inline uint64_t get_cr0() {
+  uint64_t ret;
   asm volatile ("mov %%cr0, %0" : "=r"(val));
   return ret;
 }
@@ -139,13 +139,13 @@ static inline void invlpg(void *m) {
 }
 
 /* Write a 64-bit value to a MSR */
-static inline void wrmsr(u32 id, u64 value) {
+static inline void wrmsr(uint32_t id, uint64_t value) {
   asm volatile ("wrmsr" : : "c"(id), "A"(value));
 }
 
 /* Read a 64-bit value from a MSR */
-static inline u64 rdmsr(u32 id) {
-  u64 value;
+static inline uint64_t rdmsr(uint32_t id) {
+  uint64_t value;
   asm volatile ("rdmsr" : "=A"(value) : "c"(id));
   return value;
 }

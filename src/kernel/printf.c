@@ -105,7 +105,7 @@ int kvprintf(char const *fmt, void (*func)(int, void*), void *arg, int radix, va
    char nbuf[MAXNBUF];
    char *d;
    const char *p, *percent, *q;
-   u8 *up;
+   uint8_t *up;
    int ch, n;
    uintmax_t num;
    int base, lflag, qflag, tmp, width, ladjust, sharpflag, neg, sign, dot;
@@ -129,7 +129,7 @@ int kvprintf(char const *fmt, void (*func)(int, void*), void *arg, int radix, va
    for (;;) {
       padc = ' ';
       width = 0;
-      while ((ch = (u8)*fmt++) != '%' || stop) {
+      while ((ch = (uint8_t)*fmt++) != '%' || stop) {
          if (ch == '\0')
             return (retval);
          PCHAR(ch);
@@ -138,7 +138,7 @@ int kvprintf(char const *fmt, void (*func)(int, void*), void *arg, int radix, va
       qflag = 0; lflag = 0; ladjust = 0; sharpflag = 0; neg = 0;
       sign = 0; dot = 0; dwidth = 0; upper = 0;
       cflag = 0; hflag = 0; jflag = 0; tflag = 0; zflag = 0;
-reswitch:	switch (ch = (u8)*fmt++) {
+reswitch:	switch (ch = (uint8_t)*fmt++) {
                    case '.':
                       dot = 1;
                       goto reswitch;
@@ -184,7 +184,7 @@ reswitch:	switch (ch = (u8)*fmt++) {
                          width = n;
                       goto reswitch;
                    case 'b':
-                      num = (u32)va_arg(ap, int);
+                      num = (uint32_t)va_arg(ap, int);
                       p = va_arg(ap, char *);
                       for (q = ksprintn(nbuf, num, *p++, NULL, 0); *q;)
                          PCHAR(*q--);
@@ -210,7 +210,7 @@ reswitch:	switch (ch = (u8)*fmt++) {
                       PCHAR(va_arg(ap, int));
                       break;
                    case 'D':
-                      up = va_arg(ap, u8 *);
+                      up = va_arg(ap, uint8_t *);
                       p = va_arg(ap, char *);
                       if (!width)
                          width = 16;
@@ -326,15 +326,15 @@ handle_nosign:
                       else if (tflag)
                          num = va_arg(ap, ptrdiff_t);
                       else if (lflag)
-                         num = va_arg(ap, u64);
+                         num = va_arg(ap, uint64_t);
                       else if (zflag)
                          num = va_arg(ap, size_t);
                       else if (hflag)
-                         num = (u16)va_arg(ap, int);
+                         num = (uint16_t)va_arg(ap, int);
                       else if (cflag)
-                         num = (u8)va_arg(ap, int);
+                         num = (uint8_t)va_arg(ap, int);
                       else
-                         num = va_arg(ap, u32);
+                         num = va_arg(ap, uint32_t);
                       goto number;
 handle_sign:
                       if (jflag)

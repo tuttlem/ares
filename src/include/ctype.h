@@ -5,9 +5,9 @@
  * Character testing and mapping routines
  */
 
-#ifndef __ares_ctype_h
+#ifndef __ares_ctype_h_
 
-#define __ares_ctype_h
+#define __ares_ctype_h_
 
 static inline int isdigit(int c)   { return c >= '0' && c <= '9'; }
 static inline int isalpha(int c)   { return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'); }

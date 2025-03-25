@@ -5,9 +5,9 @@
  * Driver management
  */
 
-#ifndef __ares_drivers
+#ifndef __ares_drivers_h_
 
-#define __ares_drivers
+#define __ares_drivers_h_
 
 
 typedef struct {
@@ -32,4 +32,4 @@ void drivers_term_all(void);
  */
 int driver_register(driver_t *drv);
 
-#endif /* __ares_drivers */
+#endif /* __ares_drivers_h_ */

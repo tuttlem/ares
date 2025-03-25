@@ -2,7 +2,7 @@
 #include <cpuid.h>
 
 /* Diagnostic print of a cpuid result */
-void cpuid_diag(u32 str[4]) {
+void cpuid_diag(uint32_t str[4]) {
 	char *a = (char *)&str, 
 		 *b = (char *)&str[1], 
 		 *c = (char *)&str[2], 

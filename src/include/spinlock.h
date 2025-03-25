@@ -4,7 +4,7 @@
 
 #include <types.h>
 
-extern void spin_lock(u32 *lock);
-extern void spin_unlock(u32 *lock);
+extern void spin_lock(uint32_t *lock);
+extern void spin_unlock(uint32_t *lock);
 
 #endif /* __ares_spinlock_h_ */

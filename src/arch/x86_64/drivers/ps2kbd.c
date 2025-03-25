@@ -19,13 +19,13 @@
 #define KBD_S2K_TABLE_SIZE  124
 
 typedef struct {
-    u8 scan_code;
-    u8 key_code;
+    uint8_t scan_code;
+    uint8_t key_code;
 } sk_pair;
 
-static u8 kbd_buffer[KBD_BUFFER_SIZE];
-static u32 kbd_head = 0;
-static u32 kbd_tail = 0;
+static uint8_t kbd_buffer[KBD_BUFFER_SIZE];
+static uint32_t kbd_head = 0;
+static uint32_t kbd_tail = 0;
 
 sk_pair kbd_s2k_pairs[] = {
     { 0x00, 0x00 }, { 0x01, 0x1B }, { 0x02, 0x31 }, { 0x03, 0x32 }, { 0x04, 0x33 },
@@ -66,10 +66,10 @@ static void ps2kbd_term();
 /**
  * For a given scan code value, this function will lookup the
  * corresponding key code
- * @param {u8} scan_code The scan code to translate
- * @return {u8} The resulting key code
+ * @param {uint8_t} scan_code The scan code to translate
+ * @return {uint8_t} The resulting key code
  */
-u8 kbd_get_key_code(u8 scan_code) {
+uint8_t kbd_get_key_code(uint8_t scan_code) {
     int i;
 
     for (i = 0; i < KBD_S2K_TABLE_SIZE; i ++) {
@@ -88,8 +88,8 @@ void ps2kbd_handler(struct _registers regs);
 void ps2kbd_handler(struct _registers regs) {
   /* read the scan code from the keyboard - take note: this is not the
      ASCII code of the character */
-  u8 scan_code = inb(KBD_DATA_PORT);
-  u8 key_code = kbd_get_key_code(scan_code);
+  uint8_t scan_code = inb(KBD_DATA_PORT);
+  uint8_t key_code = kbd_get_key_code(scan_code);
 
   if (key_code) {
     kbd_buffer[kbd_head] = key_code;
@@ -97,8 +97,8 @@ void ps2kbd_handler(struct _registers regs) {
   }
 }
 
-u8 kbd_get_key() {
-    u8 key_code;
+uint8_t kbd_get_key() {
+    uint8_t key_code;
 
     if (kbd_head == kbd_tail) {
         return 0x00;
@@ -119,7 +119,7 @@ driver_t ps2kbd_driver = {
 static int ps2kbd_read(device_t* dev, char* buf, int len) {
     int i = 0;
     while (i < len) {
-        u8 ch = kbd_get_key();
+        uint8_t ch = kbd_get_key();
         if (ch == 0x00) break;
         buf[i++] = ch;
     }

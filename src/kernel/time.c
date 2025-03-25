@@ -1,11 +1,11 @@
 #include "time.h"
 
-extern u64 _ares_ticks;
+extern uint64_t _ares_ticks;
 
-u64 clock_ticks() {
+uint64_t clock_ticks() {
   return _ares_ticks;
 }
 
-u64 clock_seconds() {
+uint64_t clock_seconds() {
   return _ares_ticks / 100;
 }

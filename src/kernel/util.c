@@ -1,13 +1,13 @@
 
 #include <kernel.h>
 
-u32 rand() {
-  static u32 x = 123456789;
-  static u32 y = 362436069;
-  static u32 z = 521288629;
-  static u32 w = 88675123;
+uint32_t rand() {
+  static uint32_t x = 123456789;
+  static uint32_t y = 362436069;
+  static uint32_t z = 521288629;
+  static uint32_t w = 88675123;
 
-  u32 t;
+  uint32_t t;
 
   t = x ^ (x << 11);
   x = y;

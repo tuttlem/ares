@@ -5,12 +5,12 @@
 
 #include <io.h>
 
-static u16 cur_x = 0, cur_y = 0;
-static u16 *console_buffer = (u16*)0xB8000;
+static uint16_t cur_x = 0, cur_y = 0;
+static uint16_t *console_buffer = (uint16_t*)0xB8000;
 
 /* Moves the cursor along one character */
 void console_cursor_move() {
-   u16 loc = cur_y * 80 + cur_x;
+   uint16_t loc = cur_y * 80 + cur_x;
 
    outb(0x03D4, 14);
    outb(0x03D5, loc >> 8);
@@ -21,8 +21,8 @@ void console_cursor_move() {
 
 /* Scrolls the console by 1 line of text */
 void console_scroll() {
-   u8 attr = 15;
-   u16 blank = 0x20 | (attr << 8);
+   uint8_t attr = 15;
+   uint16_t blank = 0x20 | (attr << 8);
 
    if (cur_y >= 25) {
       int i;
@@ -41,9 +41,9 @@ void console_scroll() {
 
 /* Writes a character onto the console */
 void console_put(char c) {
-   u8 attr = 15;
-   u16 ch = attr << 8;
-   u16 *location;
+   uint8_t attr = 15;
+   uint16_t ch = attr << 8;
+   uint16_t *location;
 
    if (c == 0x08 && cur_x) {
       cur_x --;
@@ -71,7 +71,7 @@ void console_put(char c) {
 
 /* Clears the console */
 void console_clear() {
-   u16 blank = 0x20 | (15 << 8);
+   uint16_t blank = 0x20 | (15 << 8);
 
    int i;
    for (i = 0; i < (80*25); i ++) {

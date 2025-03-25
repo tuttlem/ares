@@ -12,20 +12,20 @@
 #include <types.h>
 
 /** Write a byte to a software port */
-static inline void outb(u16 port, u8 value) {
+static inline void outb(uint16_t port, uint8_t value) {
   asm volatile ("outb %0, %1" : : "a"(value), "Nd"(port));
 }
 
 /** Read a byte from a software port */
-static inline u8 inb(u16 port) {
-  u8 ret;
+static inline uint8_t inb(uint16_t port) {
+  uint8_t ret;
   asm volatile ("inb %1, %0" : "=a"(ret) : "Nd"(port));
   return ret;
 }
 
 /** Read a short from a software port */
-static inline u16 inw(u16 port) {
-  u16 ret;
+static inline uint16_t inw(uint16_t port) {
+  uint16_t ret;
   asm volatile ("inw %1, %0" : "=a"(ret) : "Nd"(port));
   return ret;
 }

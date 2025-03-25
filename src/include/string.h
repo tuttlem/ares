@@ -25,7 +25,7 @@ char* strpbrk(const char *str, const char *accept);
 size_t rfind(const char *s, const char accept);
 size_t lfind(const char *s, const char accept);
 
-void* memset(void *s, u8 c, size_t n);
+void* memset(void *s, uint8_t c, size_t n);
 void* memcpy(void *d, const void *s, size_t n);
 int memcmp(const void *s1, const void *s2, size_t n);
 

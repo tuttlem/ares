@@ -4,9 +4,9 @@
 _isr _handlers[256];
 
 /* Remaps the slave and master PIC to re-base from a new offset */
-void irq_remap(u32 offset1, u32 offset2) {
+void irq_remap(uint32_t offset1, uint32_t offset2) {
 
-   u8 a1, a2;
+   uint8_t a1, a2;
 
    /* save current masks */
    a1 = inb(PIC1_DATA);
@@ -34,9 +34,9 @@ void irq_remap(u32 offset1, u32 offset2) {
 }
 
 /* Sets a bit on in the irq mask (PIC will ignore set bits) */
-void irq_set_mask(u8 line) {
-   u16 port;
-   u8 value;
+void irq_set_mask(uint8_t line) {
+   uint16_t port;
+   uint8_t value;
 
    if (line < 8) {
       port = PIC1_DATA;
@@ -50,9 +50,9 @@ void irq_set_mask(u8 line) {
 }
 
 /* Clears a bit on in the irq mask (PIC will respond to clear bits) */
-void irq_clear_mask(u8 line) {
-   u16 port;
-   u8 value;
+void irq_clear_mask(uint8_t line) {
+   uint16_t port;
+   uint8_t value;
 
    if (line < 8) {
       port = PIC1_DATA;
@@ -75,7 +75,7 @@ void interrupt_init(void) {
 }
 
 /* Provides access to handle an interrupt */
-void interrupt_register_handler(u8 n, _isr handler) {
+void interrupt_register_handler(uint8_t n, _isr handler) {
 	_handlers[n] = handler;
 }
 

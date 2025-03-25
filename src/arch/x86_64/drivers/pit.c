@@ -5,7 +5,7 @@
 
 #include <pit.h>
 
-volatile u64 _ares_ticks = 0;
+volatile uint64_t _ares_ticks = 0;
 
 void pit_clock_handler(struct _registers regs) {
     _ares_ticks++;

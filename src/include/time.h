@@ -11,7 +11,7 @@
 #include <types.h>
 #include <interrupt.h>
 
-u64 clock_ticks(void);
-u64 clock_seconds(void);
+uint64_t clock_ticks(void);
+uint64_t clock_seconds(void);
 
 #endif

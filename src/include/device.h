@@ -5,9 +5,9 @@
  * Device management
  */
 
-#ifndef __ares_device
+#ifndef __ares_device_h_
 
-#define __ares_device
+#define __ares_device_h_
 
 typedef enum {
     DEVICE_CHAR,
@@ -28,4 +28,4 @@ typedef struct device {
 void device_register(device_t* dev);
 device_t* device_find_by_name(const char* name);
 
-#endif /* __ares_device */
+#endif /* __ares_device_h_ */

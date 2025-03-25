@@ -90,10 +90,10 @@
 #define IRQ15      47	/* Secondary ATA HDD */
 
 struct _registers {
-	u64 ds;                                         /* once off push */
-	u64 rdi, rsi, rbp, rsp, rbx, rdx, rcx, rax;     /* provided by push_all */
-	u64 int_no, err_code;                           /* provided by the macro */
-    u64 rip, cs, rflags, user_rsp, user_ss;         /* provided by the processor */
+	uint64_t ds;                                         /* once off push */
+	uint64_t rdi, rsi, rbp, rsp, rbx, rdx, rcx, rax;     /* provided by push_all */
+	uint64_t int_no, err_code;                           /* provided by the macro */
+    uint64_t rip, cs, rflags, user_rsp, user_ss;         /* provided by the processor */
 };
 
 /* Format of an interrupt handler */
@@ -103,7 +103,7 @@ typedef void (*_isr)(struct _registers);
 void interrupt_init(void);
 
 /* Provides access to handle an interrupt */
-void interrupt_register_handler(u8 n, _isr handler);
+void interrupt_register_handler(uint8_t n, _isr handler);
 
 /* external isr and irq defs */
 extern void isr_0();

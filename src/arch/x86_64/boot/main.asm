@@ -98,10 +98,17 @@ _entry:
                                                          ; point to the beginning of the
                                                          ; table
 
-   mov   dword [pd]     , 0x000083
-   mov   dword [pd + 8] , 0x200083
-   mov   dword [pd + 16], 0x400083
-   mov   dword [pd + 24], 0x600083
+    ; map 0x00000000 - 0x2000000 (32 MB)
+    mov dword [pd +  0], 0x000083
+    mov dword [pd +  8], 0x00200083
+    mov dword [pd + 16], 0x00400083
+    mov dword [pd + 24], 0x00600083
+    mov dword [pd + 32], 0x00800083
+    mov dword [pd + 40], 0x00A00083
+    mov dword [pd + 48], 0x00C00083
+    mov dword [pd + 56], 0x00E00083
+    mov dword [pd + 64], 0x01000083  ; 16 MB
+    mov dword [pd + 72], 0x01200083  ; 18 MB
 
    mov   eax, pml4                                       ; load cr3 with Pml4
    mov   cr3, eax
