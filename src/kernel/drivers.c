@@ -1,28 +1,33 @@
 
 #include "drivers.h"
 
-#define MAX_DRIVERS 64
+#include <types.h>
+#include <heap.h>
+
+static driver_t* driver_registry = NULL;
 
 extern driver_t pit_driver;
 extern driver_t console_driver;
 extern driver_t ps2kbd_driver;
 
-static driver_t* registered_drivers[] = {
-    &pit_driver,
-    &console_driver,
-    &ps2kbd_driver,
-};
-
-static int driver_count = 3;
+void drivers_register_static(void) {
+    driver_register(&pit_driver);
+    driver_register(&console_driver);
+    driver_register(&ps2kbd_driver);
+}
 
 /**
  * Initialize all of the registered drivers
  */
 void drivers_init_all(void) {
-    for (int i = 0; i < driver_count; i++) {
-      if (registered_drivers[i]->init) {
-          registered_drivers[i]->init();
-      }
+    driver_t* current = driver_registry;
+
+    while (current) {
+        if (current->init) {
+            current->init();
+        }
+
+        current = current->next;
     }
 }
 
@@ -30,10 +35,14 @@ void drivers_init_all(void) {
  * Terminate all of the registered drivers
  */
 void drivers_term_all(void) {
-    for (int i = 0; i < driver_count; i++) {
-        if (registered_drivers[i]->term) {
-            registered_drivers[i]->term();
+    driver_t* current = driver_registry;
+
+    while (current) {
+        if (current->term) {
+            current->term();
         }
+
+        current = current->next;
     }
 }
 
@@ -41,7 +50,17 @@ void drivers_term_all(void) {
  * Register a driver
  */
 int driver_register(driver_t *drv) {
-    if (driver_count < MAX_DRIVERS) {
-        registered_drivers[driver_count ++] = drv;
+    drv->next = NULL;
+
+    if (!driver_registry) {
+        driver_registry = drv;
+    } else {
+        driver_t* current = driver_registry;
+
+        while (current->next) {
+            current = current->next;
+        }
+
+        current->next = drv;
     }
 }

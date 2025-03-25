@@ -23,6 +23,8 @@ typedef struct device {
     int (*write)(struct device* dev, const char* buf, int len);
 
     void* driver_data; // Device-specific data (keyboard state, disk sector info, etc.)
+
+    struct device* next;
 } device_t;
 
 void device_register(device_t* dev);

@@ -10,12 +10,19 @@
 #define __ares_drivers_h_
 
 
-typedef struct {
+typedef struct driver {
   const char *name;
 
   int (*init)(void);
   void (*term)(void);
+
+  struct driver* next;
 } driver_t;
+
+/**
+ * Adds the static "well known" drivers into the registry
+ */
+void drivers_register_static(void);
 
 /**
  * Initialize all of the registered drivers

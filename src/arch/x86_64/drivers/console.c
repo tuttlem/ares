@@ -1,4 +1,4 @@
-
+#include <heap.h>
 #include <types.h>
 #include <device.h>
 #include <drivers.h>
@@ -99,16 +99,18 @@ static int console_write(device_t* dev, const char* buf, int len) {
     return len;
 }
 
-device_t console_device = {
-    .name = "console0",
-    .type = DEVICE_CHAR,
-    .read = 0,
-    .write = console_write,
-    .driver_data = NULL
-};
-
 int console_driver_init() {
-    device_register(&console_device);
+    device_t* console_device = kmalloc(sizeof(device_t));
+
+    console_device->name = "console0";
+    console_device->type = DEVICE_CHAR;
+    console_device->read = NULL;
+    console_device->write = console_write;
+    console_device->driver_data = NULL;
+    console_device->next = NULL;
+
+    device_register(console_device);
+
     return 0;
 }
 

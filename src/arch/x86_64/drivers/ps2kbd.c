@@ -5,7 +5,7 @@
  */
 
 #include <kernel.h>
-
+#include <heap.h>
 #include <types.h>
 #include <io.h>
 #include <interrupt.h>
@@ -126,22 +126,22 @@ static int ps2kbd_read(device_t* dev, char* buf, int len) {
     return i;
 }
 
-device_t ps2kbd_device = {
-    .name = "ps2kbd0",
-    .type = DEVICE_CHAR,
-    .read = ps2kbd_read,
-    .write = 0, // Not writable
-    .driver_data = NULL
-};
-
-
 /* Initializes the keyboard driver */
 static int ps2kbd_init() {
     /* install an interrupt handler that will listen to IRQ1 which
        is the keyboard */
     interrupt_register_handler(IRQ1, ps2kbd_handler);
 
-    device_register(&ps2kbd_device);
+    device_t* ps2kbd_device = kmalloc(sizeof(device_t));
+
+    ps2kbd_device->name = "ps2kbd0";
+    ps2kbd_device->type = DEVICE_CHAR;
+    ps2kbd_device->read = ps2kbd_read;
+    ps2kbd_device->write = NULL;
+    ps2kbd_device->driver_data = NULL;
+    ps2kbd_device->next = NULL;
+
+    device_register(ps2kbd_device);
 
     return 0;
 }

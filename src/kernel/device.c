@@ -1,25 +1,38 @@
-#include <string.h>
-#include <kernel.h>
+
 #include <device.h>
 
-#define MAX_DEVICES 32
+#include <string.h>
+#include <kernel.h>
+#include <heap.h>
 
-device_t* device_registry[MAX_DEVICES];
-
-int device_count = 0;
+static device_t* device_registry = NULL;
 
 void device_register(device_t* dev) {
-    if (device_count < MAX_DEVICES) {
-        device_registry[device_count++] = dev;
+    if (!device_registry) {
+        device_registry = dev;
+        dev->next = NULL;
+    } else {
+        device_t* current = device_registry;
+
+        while (current->next) {
+            current = current->next;
+        }
+
+        current->next = dev;
+        dev->next = NULL;
     }
 }
 
 device_t* device_find_by_name(const char* name) {
-  for (int i = 0; i < device_count; i++) {
-    if (!strcmp(name, device_registry[i]->name)) {
-      return device_registry[i];
-    }
-  }
+    device_t* current = device_registry;
 
-  return NULL;
+    while (current) {
+        if (strcmp(current->name, name) == 0) {
+            return current;
+        }
+
+        current = current->next;
+    }
+
+    return NULL;
 }
