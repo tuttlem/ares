@@ -6,14 +6,21 @@
 
 static driver_t* driver_registry = NULL;
 
-extern driver_t pit_driver;
-extern driver_t console_driver;
-extern driver_t ps2kbd_driver;
+extern driver_t _ares_pit_driver;
+extern driver_t _ares_console_driver;
+extern driver_t _ares_ps2kbd_driver;
+extern driver_t _ares_null_driver;
+extern driver_t _ares_zero_driver;
+extern driver_t _ares_loopback_driver;
+
 
 void drivers_register_static(void) {
-    driver_register(&pit_driver);
-    driver_register(&console_driver);
-    driver_register(&ps2kbd_driver);
+    driver_register(&_ares_pit_driver);
+    driver_register(&_ares_console_driver);
+    driver_register(&_ares_ps2kbd_driver);
+    driver_register(&_ares_null_driver);
+    driver_register(&_ares_zero_driver);
+    driver_register(&_ares_loopback_driver);
 }
 
 /**

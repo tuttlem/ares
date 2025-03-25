@@ -117,7 +117,7 @@ int console_driver_init() {
 void console_driver_term() {
 }
 
-driver_t console_driver = {
+driver_t _ares_console_driver = {
     .name = "console",
     .init = console_driver_init,
     .term = console_driver_term

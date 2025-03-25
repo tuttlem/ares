@@ -110,7 +110,7 @@ uint8_t kbd_get_key() {
     return key_code;
 }
 
-driver_t ps2kbd_driver = {
+driver_t _ares_ps2kbd_driver = {
     .name = "ps2kbd",
     .init = ps2kbd_init,
     .term = ps2kbd_term,

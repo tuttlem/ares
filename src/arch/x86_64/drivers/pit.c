@@ -18,7 +18,7 @@ int pit_driver_init() {
     return 0;
 }
 
-driver_t pit_driver = {
+driver_t _ares_pit_driver = {
     .name = "pit",
     .init = pit_driver_init,
     .term = NULL
