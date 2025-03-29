@@ -12,9 +12,11 @@
 #define KHEAP_END   0x1020000
 
 extern void set_stdout_device(device_t* dev);
+extern void _ares_page_fault_handler(struct _registers regs);
 
 void main() {
   idt_init();
+  interrupt_register_handler(14, _ares_page_fault_handler);
   kheap_init((void*)KHEAP_START, (void*)KHEAP_END);
   drivers_register_static();
   drivers_init_all();

@@ -16,17 +16,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-
-#define PANIC(msg)      panic(msg, __FILE__, __LINE__)
-#define ASSERT(b)       ((b) ? (void)0 : panic_assert(__FILE__, __LINE__, #b))
+#include <panic.h>
 
 #define min(a, b) ((a > b) ? b : a)
 #define max(a, b) ((a > b) ? a : b)
 #define abs(a)    ((a >= 0) ? a : -a)
-
-/* Panic prototypes */
-extern void panic(const char *msg, const char *file, uint32_t line);
-extern void panic_assert(const char *file, uint32_t line, const char *desc);
 
 uint32_t rand();
 
