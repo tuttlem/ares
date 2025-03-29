@@ -426,3 +426,8 @@ void printf(const char *fmt, ...) {
    kvprintf(fmt, putchar, NULL, 10, ap);
    va_end(ap);
 }
+
+int vprintf(const char *fmt, va_list ap) {
+    return kvprintf(fmt, putchar, NULL, 10, ap);
+}
+

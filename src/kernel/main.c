@@ -1,5 +1,6 @@
 
 #include <kernel.h>
+#include <log.h>
 #include <heap.h>
 #include <drivers.h>
 #include <device.h>
@@ -7,6 +8,7 @@
 #include <pit.h>
 #include <time.h>
 #include <cpuid.h>
+#include <vmm.h>
 
 #define KHEAP_START 0x1000000
 #define KHEAP_END   0x1020000
@@ -23,6 +25,9 @@ void main() {
 
   device_t *con = device_find_by_name("console0");
   set_stdout_device(con);
+
+  log_set_level(LOG_LEVEL_DEBUG);
+  log_info("Starting Ares ...");
 
   device_t *kbd = device_find_by_name("ps2kbd");
 
