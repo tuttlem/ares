@@ -108,7 +108,7 @@ _entry:
     mov dword [pd + 48], 0x00C00083
     mov dword [pd + 56], 0x00E00083
     mov dword [pd + 64], 0x01000083  ; 16 MB
-    mov dword [pd + 72], 0x01200083  ; 18 MB
+    ; mov dword [pd + 72], 0x01200083  ; 18 MB
 
    mov   eax, pml4                                       ; load cr3 with Pml4
    mov   cr3, eax

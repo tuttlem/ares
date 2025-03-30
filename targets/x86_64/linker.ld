@@ -25,6 +25,11 @@ SECTIONS
       /* Pd -> Page directory (4096 bytes after Pdpt) */
       pd = .;
       . += 0x1000;
+
+      /* Pt -> Page table */
+      pt = .;
+      . += 0x1000;
+
       . += 0x8000;
       _stack = .;
    }
