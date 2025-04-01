@@ -85,51 +85,43 @@ _entry:
    mov   esp, _stack
 
    mov   eax, pdpt
-   or    eax, 1                                          ; mark as "present"
-   mov   [pml4], eax                                     ; Pml4[0] -> Pdpt
-   mov   [pml4 + 0xFF8], eax                             ; make the last entry of the pml4
-                                                         ; point to the beginning of the
-                                                         ; table
+   or    eax, 1                               ; mark as "present"
+   mov   [pml4], eax                          ; Pml4[0] -> Pdpt
+   mov   [pml4 + 0xFF8], eax                  ; make the last entry of the pml4
+                                              ; point to the beginning of the
+                                              ; table
 
    mov   eax, pd
-   or    eax, 1                                          ; mark as "present"
-   mov   [pdpt], eax                                     ; Pdpt[0] -> Pd
-   mov   [pdpt + 0xFF0], eax                             ; make the last entry of the pdpt
-                                                         ; point to the beginning of the
-                                                         ; table
+   or    eax, 1                               ; mark as "present"
+   mov   [pdpt], eax                          ; Pdpt[0] -> Pd
+   mov   [pdpt + 0xFF0], eax                  ; make the last entry of the pdpt
+                                              ; point to the beginning of the
+                                              ; table
 
-    ; map 0x00000000 - 0x2000000 (32 MB)
-    mov dword [pd +  0], 0x000083
-    mov dword [pd +  8], 0x00200083
-    mov dword [pd + 16], 0x00400083
-    mov dword [pd + 24], 0x00600083
-    mov dword [pd + 32], 0x00800083
-    mov dword [pd + 40], 0x00A00083
-    mov dword [pd + 48], 0x00C00083
-    mov dword [pd + 56], 0x00E00083
-    mov dword [pd + 64], 0x01000083  ; 16 MB
-    ; mov dword [pd + 72], 0x01200083  ; 18 MB
 
-   mov   eax, pml4                                       ; load cr3 with Pml4
+   mov dword [pd +  0], 0x000083              ; map the zero page temporarily
+   mov dword [pd + 64], 0x01000083            ; map the kernel
+
+   mov   eax, pml4                            ; load cr3 with Pml4
    mov   cr3, eax
 
-   mov   eax, cr4                                        ; enable PAE
+   mov   eax, cr4                             ; enable PAE
    or    eax, 1 << 5
    mov   cr4, eax
 
-   mov   ecx, 0xC0000080                                 ; enable long mode
+   mov   ecx, 0xC0000080                      ; enable long mode
    rdmsr
    or    eax, 1 << 8
    wrmsr
 
-   mov   eax, cr0                                        ; enable paging
+   mov   eax, cr0                             ; enable paging
    or    eax, 1 << 31
    mov   cr0, eax
 
-   mov   eax, gdt_2                          ; re-flush the GDT
+   mov   eax, gdt_2                           ; re-flush the GDT
    lgdt  [eax]
 
-   push  0x08                                ; jump into 64-bit land
+   push  0x08                                 ; jump into 64-bit land
    push  .enter_long
    retf
 
@@ -160,6 +152,7 @@ _entry:
 [EXTERN pml4]
 [EXTERN pdpt]
 [EXTERN pd]
+[EXTERN pt]
 
 gdt_tab:
    DQ    0x0000000000000000

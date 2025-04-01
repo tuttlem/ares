@@ -31,6 +31,18 @@ void main() {
 
   device_t *kbd = device_find_by_name("ps2kbd");
 
+  // unmapped zero page!
+  vmm_unmap_zero_page();
+
+  /*
+    This fails when the zero page is unmapped - woohoo!
+
+  uint64_t *p = (uint64_t*)0;
+  *p = 0xdeadbeef;
+  uint64_t k = *p;
+
+   */
+
   while (1) {
     char ch;
 

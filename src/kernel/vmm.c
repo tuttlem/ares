@@ -32,3 +32,7 @@ void vmm_unmap(uint64_t virt_addr) {
     uint64_t pt_index = (virt_addr >> 12) & 0x1FF;
     pt[pt_index].value = 0;
 }
+
+void vmm_unmap_zero_page() {
+    pd[0].value = 0;
+}

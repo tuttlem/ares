@@ -52,5 +52,6 @@ extern pte_t pt[];
 
 void vmm_map(uint64_t virt_addr, uint64_t phys_addr, uint64_t flags);
 void vmm_unmap(uint64_t virt_addr);
+void vmm_unmap_zero_page();
 
 #endif
