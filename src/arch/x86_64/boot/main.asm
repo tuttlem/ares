@@ -4,6 +4,8 @@
 ; Boot module
 ; ----------------------------------------------------
 
+%define KERNEL_VMA_OFFSET 0xFFFFFFFF80000000
+
 [BITS 32]
 
 [SECTION .mbheader]
@@ -70,6 +72,9 @@ mb_header_end:
 
 _entry:
 
+   mov   [multiboot_magic], eax              ; save the magic value from grub
+   mov   [multiboot_info], ebx               ; save the address of the boot info from grub
+
    mov   eax, gdt_1                          ; load a GDT that we can trust as GRUB
    lgdt  [eax]                               ; may have left us with garbage
 
@@ -102,6 +107,7 @@ _entry:
    mov dword [pd +  0], 0x000083              ; map the zero page temporarily
    mov dword [pd + 64], 0x01000083            ; map the kernel
 
+
    mov   eax, pml4                            ; load cr3 with Pml4
    mov   cr3, eax
 
@@ -127,7 +133,7 @@ _entry:
 
 [BITS 64]
 
-[EXTERN main]
+[EXTERN kmain]
 
 .enter_long:
 
@@ -136,12 +142,19 @@ _entry:
    mov   es, ax
    mov   ss, ax
 
-   mov   rsp, _stack + 0xFFFFFFFF80000000    ; re-base the stack
+   mov   rsp, _stack + KERNEL_VMA_OFFSET     ; re-base the stack
 
    mov   rax, gdt_3                          ; re-base the gdt
    lgdt  [rax]
 
-   mov   rax, main                           ; jump into c-land
+   mov   eax, dword [multiboot_magic]        ; load up the magic value that we saved earlier
+   mov   esi, eax                            ; in esi, it gets passed as the 2nd param to kmain
+
+   mov   rax, qword [multiboot_info]         ; load the physical address of multiboot2 info
+   add   rax, KERNEL_VMA_OFFSET              ; convert physical address to higher-half virtual address
+   mov   rdi, rax                            ; in rdi, it gets passwd as the 1st param to kmain
+
+   mov   rax, kmain                          ; jump to the kernel
    call  rax
 
    cli
@@ -173,5 +186,8 @@ gdt_2:
 
 gdt_3:
    DW    23
-   DQ    gdt_tab + 24 + 0xFFFFFFFF80000000
+   DQ    gdt_tab + 24 + KERNEL_VMA_OFFSET
 
+
+multiboot_magic:    DD 0
+multiboot_info:     DQ 0

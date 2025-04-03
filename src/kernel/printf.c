@@ -414,8 +414,14 @@ extern void console_put(char c);
 extern void write_stdout_char(char, int);
 
 static void putchar(int c, void *arg) {
- //   console_put(c);
-    write_stdout_char(c, 1);
+  /* early boot implementation so that we don't require any devices or
+     drivers in order to print debug information to screen */
+  console_put(c);
+
+  /* this implementatoin is for later on, once the device is alive - this
+     printf implementation may never actually use this. stdout might be
+     left to user space */
+ //   write_stdout_char(c, 1);
 }
 
 void printf(const char *fmt, ...) {

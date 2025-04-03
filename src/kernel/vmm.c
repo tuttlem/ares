@@ -6,13 +6,6 @@
 #define VMM_PD_INDEX(x)   (((x) >> 21) & 0x1FF)
 #define VMM_PT_INDEX(x)   (((x) >> 12) & 0x1FF)
 
-/*
-extern pml4e_t pml4[];
-extern pdpe_t pdpt[];
-extern pde_t pd[];
-extern pte_t pt[];
-*/
-
 void vmm_map(uint64_t virt_addr, uint64_t phys_addr, uint64_t flags) {
     uint64_t pml4_index = VMM_PML4_INDEX(virt_addr);
     uint64_t pdpt_index = VMM_PDP_INDEX(virt_addr);
@@ -27,6 +20,17 @@ void vmm_map(uint64_t virt_addr, uint64_t phys_addr, uint64_t flags) {
     pt[pt_index].bits.phys_addr = phys_addr >> 12;
     pt[pt_index].bits.nx = (flags & PAGE_NX) ? 1 : 0;
 }
+
+void vmm_map_range(uint64_t virt_addr, uint64_t phys_addr, uint64_t size, uint64_t flags) {
+    uint64_t end = phys_addr + size;
+
+    while (phys_addr < end) {
+        vmm_map(virt_addr, phys_addr, flags);
+        virt_addr += 0x1000;
+        phys_addr += 0x1000;
+    }
+}
+
 
 void vmm_unmap(uint64_t virt_addr) {
     uint64_t pt_index = (virt_addr >> 12) & 0x1FF;
