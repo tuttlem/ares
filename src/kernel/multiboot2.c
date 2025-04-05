@@ -1,8 +1,71 @@
 
 #include "multiboot2.h"
 #include <stdio.h>
+#include <stddef.h>
 
-void multiboot2_parse(uint64_t addr, uint32_t magic) {
+char* _ares_mb2_cmdline = NULL;
+char* _ares_mb2_loader_name = NULL;
+
+struct multiboot_tag_basic_meminfo* _ares_mb2_basic_meminfo = NULL;
+struct multiboot_tag_bootdev*       _ares_mb2_bootdev = NULL;
+struct multiboot_tag_mmap*      	_ares_mb2_memmap = NULL;
+struct multiboot_framebuffer*       _ares_mb2_framebuffer = NULL;
+
+void mb2_parse(uint64_t addr, uint32_t magic) {
+    if (magic != MULTIBOOT2_BOOTLOADER_MAGIC) {
+        printf("multiboot2: bad magic number %d (expected 0x%08x)\n", magic, MULTIBOOT2_BOOTLOADER_MAGIC);
+        return;
+    }
+
+    if (addr & 7) {
+        printf("multiboot2: misaligned mbi 0x%016llx\n", addr);
+        return;
+    }
+
+    uint64_t size = *(uint64_t *)addr;
+
+    struct multiboot_tag* tag = (struct multiboot_tag*)(addr + 8);
+
+    while (tag->type != MULTIBOOT_TAG_TYPE_END) {
+
+        switch (tag->type) {
+            case MULTIBOOT_TAG_TYPE_CMDLINE:
+                _ares_mb2_cmdline = ((struct multiboot_tag_string *) tag)->string;
+                break;
+
+            case MULTIBOOT_TAG_TYPE_BOOT_LOADER_NAME:
+                _ares_mb2_loader_name = ((struct multiboot_tag_string *) tag)->string;
+                break;
+
+            case MULTIBOOT_TAG_TYPE_BASIC_MEMINFO:
+                _ares_mb2_basic_meminfo = ((struct multiboot_tag_basic_meminfo *) tag);
+                break;
+
+            case MULTIBOOT_TAG_TYPE_BOOTDEV:
+                _ares_mb2_bootdev = ((struct multiboot_tag_bootdev *) tag);
+                break;
+
+            case MULTIBOOT_TAG_TYPE_MMAP:
+                _ares_mb2_memmap = ((struct multiboot_tag_mmap *) tag);
+                break;
+
+            case MULTIBOOT_TAG_TYPE_FRAMEBUFFER:
+                _ares_mb2_framebuffer = ((struct multiboot_tag_framebuffer *) tag);
+
+                break;
+
+            default:
+                break;
+        }
+
+        // Advance to next tag (8-byte aligned)
+        tag = (struct multiboot_tag *) ((multiboot_uint8_t *) tag + ((tag->size + 7) & ~7));
+    }
+
+}
+
+
+void mb2_print(uint64_t addr, uint32_t magic) {
     if (magic != MULTIBOOT2_BOOTLOADER_MAGIC) {
         printf("multiboot2: bad magic number %d\n", magic);
         return;

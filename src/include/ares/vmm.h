@@ -25,6 +25,10 @@
 #define PAGE_ENTRIES    512
 #define PAGE_SIZE       0x1000
 
+#define ALIGN_UP(x, a)   (((x) + ((a) - 1)) & ~((a) - 1))
+#define ALIGN_DOWN(x, a) ((x) & ~((a) - 1))
+
+
 // Bitfield structure for all four paging levels
 typedef union {
     struct {

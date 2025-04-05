@@ -403,6 +403,8 @@ struct multiboot_tag_load_base_addr
   multiboot_uint32_t load_base_addr;
 };
 
-void multiboot2_parse(uint64_t addr, uint32_t magic);
+void mb2_print(uint64_t addr, uint32_t magic);
+void mb2_parse(uint64_t addr, uint32_t magic);
+
 
 #endif /* __ares_multiboot2_h_ */
