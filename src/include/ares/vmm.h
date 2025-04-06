@@ -11,6 +11,8 @@
 
 #include <stdint.h>
 
+#define KERNEL_VMA_OFFSET 0xFFFFFFFF80000000
+
 #define PAGE_PRESENT    0x001
 #define PAGE_RW         0x002
 #define PAGE_USER       0x004
@@ -28,6 +30,9 @@
 #define ALIGN_UP(x, a)   (((x) + ((a) - 1)) & ~((a) - 1))
 #define ALIGN_DOWN(x, a) ((x) & ~((a) - 1))
 
+#define PHYS(x) ((void*)((uintptr_t)(x) - KERNEL_VMA_OFFSET))        // virtual to physical
+#define VIRT(x) ((void*)((uintptr_t)(x) + KERNEL_VMA_OFFSET))        // physical to virtual
+#define IS_KERNEL_VIRT(addr) (((uintptr_t)(addr)) >= KERNEL_VMA_OFFSET)
 
 // Bitfield structure for all four paging levels
 typedef union {
